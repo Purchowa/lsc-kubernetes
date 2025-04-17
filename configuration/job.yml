@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-content-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: copy-content
+        image: busybox
+        command: ["/bin/sh", "-c", "echo '<h1>Welcome to the HTTP server - LSC</h1>' > /mnt/lsc/index.html"]
+        volumeMounts:
+        - name: web-content
+          mountPath: /mnt/lsc
+      volumes:
+      - name: web-content
+        persistentVolumeClaim:
+          claimName: lsc-pvc
+      restartPolicy: OnFailure
+  backoffLimit: 2
